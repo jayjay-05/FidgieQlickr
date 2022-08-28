@@ -57,12 +57,12 @@ The second part of the code involved sending usuable data to a web server that w
 2 2526  9
 ...
 ```
-where the first column contains the identifier, the second column contains the timestamp and the third column contains the value received.
+where the first column contains the identifier, the second column contains the timestamp and the third column contains the value received. The code is available in the file labelled `Fidgie_Qlickr.ino`.
 
 
 #### 4. Analyze Data 
 After each use, the web server receives the data. Due to time considerations and the complexity of intergrating `MATLAB` to a web server, we made the assumption that the `MATLAB` sketch will open a .txt document.
-The sketch analyzes the txt file by spliting the data into two arrays based on the identifier, 1 or 2.
+The sketch (named `Analyze_Qlickr_Data.m`) analyzes the txt file by spliting the data into two arrays based on the identifier, 1 or 2.
 
 ```matlab
 %Assumption: 1 is an identifier for clicker button data and 2 is a
