@@ -1,5 +1,5 @@
 # FidgieQlickr
-## An IoT project that wirelessly receives analog and digital data from hardware components embedded in a custom fidget toy to analyze usage, frequency, stress levels, emotions etc based on user input and the data will be displayed on an app with a visually appealing UI.
+## An IoT project that wirelessly receives analog and digital data from hardware components embedded in a custom fidget toy to analyze usage, frequency, stress levels, emotions, etc. based on user input, and the data will be displayed on an app with a visually appealing UI.
 
 ### Components
 #### 1. 3D Model of Fidget Toy Protoype
@@ -7,7 +7,7 @@ The 3D model of the fidget toy prototype was designed on `SolidWorks` based on t
 1. 1 Clicker Button
 1. 1 Slider (Slide Potentiometer)
 1. 1 Joystick
-1. 5 LED embedded Push Buttons
+1. 5 LED-Embedded Push Buttons
 1. 1 On/Off Button
 1. 1 On/Off Status LED
 1. 1 ESP32 Board with Bluetooth and WiFi Capabilities
@@ -49,7 +49,7 @@ void setup() {
 }
 ```
 
-The second part of the code involved sending usuable data to the web server that would be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
+The second part of the code involved sending usuable data to a web server that would be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
 ```txt
 1 2425  1
 2 2426  5
@@ -57,12 +57,12 @@ The second part of the code involved sending usuable data to the web server that
 2 2526  9
 ...
 ```
-where the first column contains the identifier, the second column contains the timestamp and the thrid column contains the value received.
+where the first column contains the identifier, the second column contains the timestamp and the third column contains the value received.
 
 
 #### 4. Analyze Data 
 After each use, the web server receives the data. Due to time considerations and the complexity of intergrating `MATLAB` to a web server, we made the assumption that the `MATLAB` sketch will open a .txt document.
-The sketch analyzes the txt file by spilting the data into two arrays based on the identifier, 1 or 2.
+The sketch analyzes the txt file by spliting the data into two arrays based on the identifier, 1 or 2.
 
 ```matlab
 %Assumption: 1 is an identifier for clicker button data and 2 is a
@@ -82,7 +82,7 @@ clicker_timestamp_array= clicker_timestamp_array - clicker_initial_time;
 ```
 
 
-After manipulating the timestamps into a more usuable form, the `Slider Position` Graph was plotted. The results produced was essentiallys a `time-displacement graph` of the slider. By taking the derivative of this graph, the speed of the slider was calculated as time went on. This data will be presented to the users in a more visually appealing manner.
+After manipulating the timestamps into a more usuable form, the `Slider Position` Graph was plotted. The results produced was essentially a `time-displacement graph` of the slider. By taking the derivative of this graph, the speed of the slider was calculated as time went on. This data will be presented to the users in a more visually appealing manner.
 
 ```matlab
 % Create a plot of slider location on a scale of 1-10
@@ -150,7 +150,7 @@ An example of the data plots produced by the scripts is available in the files.
 
 The app for Fidgie Qlickr was created on `React Native`, using `JavaScript`. The app consists of simple interactive elements such as text, images, buttons, input text and scrolling view options.
 
-Within the code to improve the UI/UX, the background colour was adjusted to better fit the theme of Fidgie Qlickr. Other design choices made were centring text, images and input boxes as well as including scrolling view so all information on the app could fit on one page. 
+Within the code to improve the UI/UX, the background colour was adjusted to better fit the theme of Fidgie Qlickr. Other design choices made were centering text, images and input boxes as well as including scrolling view so all information on the app could fit on one page. 
 
 The first page of the app was coded to receive input from the user using the TextInput. Unfortunately due to time constraints, the input from the user was not stored anywhere meaningful in terms of data collection.
 
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-The third page of the app was designed to help better understand the intentions and goals of the user through app usage by taking information via buttons and text inputs. The buttons used on this page demonstrates that the users response was recorded via flashing of the button that was pressed and a confirmation alert of  the response taken.
+The third page of the app was designed to help better understand the intentions and goals of the user through app usage by taking information via buttons and text inputs. The buttons used on this page demonstrates that the users response was recorded via flashing of the button that was pressed and a confirmation alert of the response taken.
 
 ``` javascript
 
