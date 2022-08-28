@@ -1,5 +1,5 @@
 # FidgieQlickr
-## an IoT project that wirelessly receives analog and digital data from hardware components embedded in a custom fidget toy to analyze usage, frequency, stress levels, emotions etc based on user input and the data will be displayed on an app with a visually appealing UI.
+## An IoT project that wirelessly receives analog and digital data from hardware components embedded in a custom fidget toy to analyze usage, frequency, stress levels, emotions etc based on user input and the data will be displayed on an app with a visually appealing UI.
 
 ### Components
 #### 1. 3D Model of Fidget Toy Protoype
@@ -15,7 +15,7 @@ The 3D model of the fidget toy prototype was designed on `SolidWorks` based on t
 All .sldprt and .sldasm files are availble in the `Clicker Prototype CAD Files.zip` file
 
 #### 2. UI Layout For App
-Figma was used as the primary tool to develop the UI for the App. Check out the project [here]((https://www.figma.com/community/file/1145501936443574620))
+Figma was used as the primary tool to develop the UI for the App. Check out the project here
 https://www.figma.com/community/file/1145501936443574620
 
 
@@ -25,7 +25,30 @@ The first part of the code involves setting up the ESP32 board to interact with 
 
 The setup also involves connecting the board to WiFi and initializing a Web Server, where the data will be sent to.
 
-[insert code]
+```C
+void setup() {
+  Serial.begin(115200);
+
+  //connecting board to local network
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.printf("WiFi Failed!\n");
+    return;
+  }
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  //initializing the server
+  //WebSerial is accessible at "<IP Address>/webserial" in browser
+  WebSerial.begin(&server); //initializes web-based serial monitor
+  WebSerial.msgCallback(recvMsg); //callback function that will run recvMsg() whenever message is sent from monitor to board
+  server.begin();
+
+  //hardware setup
+  pinMode(potPin, INPUT);
+}
+```
 
 the second part of the code involves sending usuable data to the web server that will be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
 ```txt
@@ -39,7 +62,7 @@ where the first column contains the identifier, the second column contains the t
 
 
 #### 4. Analyze Data 
-After each use, the web server receives the data. Due to time consideration and the complexity to intergrating MATLAB and a web server together. We made an assumption that the MATLAB sketch will open a .txt document.
+After each use, the web server receives the data. Due to time consideration and the complexity to intergrating MATLAB and a web server together, we made an assumption that the MATLAB sketch will open a .txt document.
 The sketch analyzes the txt file by spilting the data into two arrays based on the identifier, 1 or 2.
 
 ```matlab
