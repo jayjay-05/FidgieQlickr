@@ -61,7 +61,7 @@ where the first column contains the identifier, the second column contains the t
 
 
 #### 4. Analyze Data 
-After each use, the web server receives the data. Due to time considerations and the complexity of intergrating MATLAB to a web server, we made the assumption that the MATLAB sketch will open a .txt document.
+After each use, the web server receives the data. Due to time considerations and the complexity of intergrating `MATLAB` to a web server, we made the assumption that the `MATLAB` sketch will open a .txt document.
 The sketch analyzes the txt file by spilting the data into two arrays based on the identifier, 1 or 2.
 
 ```matlab
