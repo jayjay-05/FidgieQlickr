@@ -4,30 +4,30 @@
 ### Components
 #### 1. 3D Model of Fidget Toy Protoype
 The 3D model of the fidget toy prototype was designed on `SolidWorks` based on the dimensions of an `ESP32 board`. The prototype contains:
-a. 1 Clicker Button
-b. 1 Slider (Slide Potentiometer)
-c. 1 Joystick
-d. 5 LED embedded Push Buttons
-e. 1 On/Off Button
-f. 1 On/Off Status LED
-g. ESP32 Board
+1. 1 Clicker Button
+1. 1 Slider (Slide Potentiometer)
+1. 1 Joystick
+1. 5 LED embedded Push Buttons
+1. 1 On/Off Button
+1. 1 On/Off Status LED
+1. 1 ESP32 Board with Bluetooth and WiFi Capabilities
 
 All .sldprt and .sldasm files are availble in the `Clicker Prototype CAD Files.zip` file
 
 #### 2. UI Layout For App
-Figma was used as the primary tool to develop the UI for the App. Check out the project [here]([url](https://www.figma.com/community/file/1145501936443574620))
+Figma was used as the primary tool to develop the UI for the App. Check out the project [here]((https://www.figma.com/community/file/1145501936443574620))
 https://www.figma.com/community/file/1145501936443574620
 
 
 #### 3. Code ESP32 Board to Interface with Hardware Components and Send Data to Web Server
-The first part of the code involves setting up the ESP32 board to interact with the hardware components. In considerationn of the time limit, we made the decision to only obtain data from the slider (i.e. slide potentiometer) and the clicker (i.e push button). The push button idenitier set as the number `1` and the identifier for the slide potentiometer was the number `2`.
+The first part of the code involves setting up the ESP32 board to interact with the hardware components. In considerationn of the time limit, we made the decision to only obtain data from the slider (i.e. slide potentiometer) and the clicker (i.e push button). The push button idenitier set as the number `1` and the identifier for the slide potentiometer was the number `2`. These two numbers willl be used to identify what components the data is coming from
 [insert picture]
 
 The setup also involves connecting the board to WiFi and initializing a Web Server, where the data will be sent to.
 
 [insert code]
 
-the second part of the code involves sending usuable data to the web server that will be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is
+the second part of the code involves sending usuable data to the web server that will be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
 ```txt
 1 2425  1
 2 2426  5
@@ -39,8 +39,91 @@ where the first column contains the identifier, the second column contains the t
 
 
 #### 4. Analyze Data 
-After each use, the web server receives the data. Due to time consideration and the complexity to mesh MATLAB and a web server together. We made an assumption that the MATLAB sketch will open a .txt document
-The sketch analyzes the txt file by spilting the data into two arrays based on the identifier
+After each use, the web server receives the data. Due to time consideration and the complexity to intergrating MATLAB and a web server together. We made an assumption that the MATLAB sketch will open a .txt document.
+The sketch analyzes the txt file by spilting the data into two arrays based on the identifier, 1 or 2.
+
+```matlab
+%Assumption: 1 is an identifier for clicker button data and 2 is a
+%identiier for slider data
+slider_timestamp_array = timestamp(2:2:end,:);
+slider_value_array = value(2:2:end, :);
+
+
+clicker_timestamp_array = timestamp(1:2:end,:);
+clicker_value_array = value(1:2:end, :);
+
+slider_initial_time = slider_timestamp_array(1,1);
+slider_timestamp_array = slider_timestamp_array - slider_initial_time;
+
+clicker_initial_time = clicker_timestamp_array(1,1);
+clicker_timestamp_array= clicker_timestamp_array - clicker_initial_time;
+```
+
+
+After manipulating the timestamps into more a usuable form, the `Slider Position` Graph is plotted. This essentially is a `time-displacement graph` of the slider. By taking the derivative of this graph, we calculated the speed of the slider as time goes on. This data will be presented to the users in a more visualling appealing manner
+
+```matlab
+% Create a plot of slider location on a scale of 1-10
+figure;
+ln_slider = plot(slider_timestamp_array, slider_value_array);
+ln_slider.LineWidth =2.5;
+ln_slider.Color= [0.4,0.9,0.1];
+ylabel("Slider Location");
+xlabel("Time Elasped (ms)")
+title("Slider Position Vs Time");
+
+
+%Analyzing the ntestity of slider movement by differentiating the position
+%data to calculate the speed of slider movement
+%Higher the speed, higher the intensity
+speed = diff(slider_value_array)./diff(slider_timestamp_array);
+dim = size(speed);
+figure;
+ln_slider_speed = plot(slider_timestamp_array(2:end), speed);
+ln_slider_speed.LineWidth =2.5;
+ln_slider_speed.Color= [0.5,0.6,0.3];
+ylabel("Slider Speed Intensity");
+xlabel("Time Elasped (ms)")
+title("Slider Intensity VS Time")
+```
+
+
+
+Similarly, the raw data for the push button was plotted against time. This graph oscillates between 1 and 0, indicating whether the button was pressed or not at a given moment in time. By taking the absolute derivative of this graph, we obtained the number of changes. We calculated the frequency of clicker pressses per second and called it the `Clicker Intensity`. Again, the data plotted will be provided to the users
+
+```matlab
+%find frequency of chnage of clicker
+changes = diff(clicker_value_array);
+dim = size(changes);
+
+num_100seconds = roundn(dim(1,1),1);
+num_seconds = num_100seconds/10;
+cutoff_rows = dim(1,1) - num_100seconds;
+
+changes = changes(1: end-cutoff_rows);
+changes = reshape(changes,10,[]);
+changes = abs(changes);
+
+time_seconds_array = zeros(num_seconds,1);
+change_frequency_array = zeros(num_seconds,1);
+for second=1 : num_seconds
+    time_seconds_array(second,1) = second;
+    num_changes = sum(changes(:,second)~=0);
+    change_frequency_array(second, 1)=num_changes;
+end
+
+%Plot Frequency of Clicks
+figure;
+ln_clicker_frequency = plot(time_seconds_array, change_frequency_array);
+ln_clicker_frequency.LineWidth =2.5;
+ln_clicker_frequency.Color= [0.7,0.6,0.1];
+ylabel("Clicks per second");
+xlabel("Time Elasped (s)");
+title("Clicker Frequency");
+```
+
+An example of the data plots produced by the scripts is available in the files.
+
 
 #### 5. Create App Using React
 
