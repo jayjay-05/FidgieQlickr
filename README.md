@@ -20,8 +20,7 @@ https://www.figma.com/community/file/1145501936443574620
 
 
 #### 3. Code ESP32 Board to Interface with Hardware Components and Send Data to Web Server
-The first part of the code involves setting up the ESP32 board to interact with the hardware components. In considerationn of the time limit, we made the decision to only obtain data from the slider (i.e. slide potentiometer) and the clicker (i.e push button). The push button idenitier set as the number `1` and the identifier for the slide potentiometer was the number `2`. These two numbers willl be used to identify what components the data is coming from
-[insert picture]
+The first part of the code involved setting up the ESP32 board to interact with the hardware components. In consideration of the time limit, we made the decision to only obtain data from the slider (i.e. slide potentiometer) and the clicker (i.e push button). The push button idenifier was set to the number `1` and the identifier for the slide potentiometer was the number `2`. These two numbers would be used to identify which components the data is coming from.
 
 The setup also involves connecting the board to WiFi and initializing a Web Server, where the data will be sent to.
 
@@ -50,7 +49,7 @@ void setup() {
 }
 ```
 
-the second part of the code involves sending usuable data to the web server that will be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
+The second part of the code involved sending usuable data to the web server that would be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not. The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
 ```txt
 1 2425  1
 2 2426  5
@@ -62,7 +61,7 @@ where the first column contains the identifier, the second column contains the t
 
 
 #### 4. Analyze Data 
-After each use, the web server receives the data. Due to time consideration and the complexity to intergrating MATLAB and a web server together, we made an assumption that the MATLAB sketch will open a .txt document.
+After each use, the web server receives the data. Due to time considerations and the complexity of intergrating MATLAB to a web server, we made the assumption that the MATLAB sketch will open a .txt document.
 The sketch analyzes the txt file by spilting the data into two arrays based on the identifier, 1 or 2.
 
 ```matlab
@@ -83,7 +82,7 @@ clicker_timestamp_array= clicker_timestamp_array - clicker_initial_time;
 ```
 
 
-After manipulating the timestamps into more a usuable form, the `Slider Position` Graph is plotted. This essentially is a `time-displacement graph` of the slider. By taking the derivative of this graph, we calculated the speed of the slider as time goes on. This data will be presented to the users in a more visualling appealing manner
+After manipulating the timestamps into a more usuable form, the `Slider Position` Graph was plotted. The results produced was essentiallys a `time-displacement graph` of the slider. By taking the derivative of this graph, the speed of the slider was calculated as time went on. This data will be presented to the users in a more visually appealing manner.
 
 ```matlab
 % Create a plot of slider location on a scale of 1-10
@@ -110,9 +109,7 @@ xlabel("Time Elasped (ms)")
 title("Slider Intensity VS Time")
 ```
 
-
-
-Similarly, the raw data for the push button was plotted against time. This graph oscillates between 1 and 0, indicating whether the button was pressed or not at a given moment in time. By taking the absolute derivative of this graph, we obtained the number of changes. We calculated the frequency of clicker pressses per second and called it the `Clicker Intensity`. Again, the data plotted will be provided to the users
+Similarly, the raw data for the push button was plotted against time. This graph oscillates between 1 and 0, indicating whether the button was pressed or not at a given moment in time. By taking the absolute derivative of this graph, the number of changes was obtained. The frequency of clicker pressses per second was calculated and called the `Clicker Intensity`. Again, the data plotted will be provided to the users.
 
 ```matlab
 %find frequency of chnage of clicker
@@ -150,8 +147,12 @@ An example of the data plots produced by the scripts is available in the files.
 
 #### 5. Create App Using React
 
-The app for Fidgie Qlickr was created on React Native, using JavaScript. The app consists of simple elements such as text, images, buttons, input text and scrolling view options.
 
+The app for Fidgie Qlickr was created on `React Native`, using `JavaScript`. The app consists of simple interactive elements such as text, images, buttons, input text and scrolling view options.
+
+Within the code to improve the UI/UX, the background colour was adjusted to better fit the theme of Fidgie Qlickr. Other design choices made were centring text, images and input boxes as well as including scrolling view so all information on the app could fit on one page. 
+
+The first page of the app was coded to receive input from the user using the TextInput. Unfortunately due to time constraints, the input from the user was not stored anywhere meaningful in terms of data collection.
 
 ```javascript
 
@@ -198,8 +199,7 @@ const styles = StyleSheet.create({
   },
 });
 ```
-Within my code I was able to change the background colour to fit the theme of Fidgie Qlickr as well as centre the text, images and input boxes for better UI/UX.
-I was also able to allow for better UI/UX using a scrolling view so all the information on the app could fit on one page. On this first page, I was able to receive input from the user using the TextInput, although due to time constraints I was not able to store them anywhere meaningful.
+Through the second page, the user had the option to identify themselves as a person that experiences ADHD/ADD/anxiety, for data collection purposes. This identification is done by the user clicking a button under a prompt; after the button press, the initial prompt and button text changes to indicate to the user that their action was recorded.
 
 ``` javascript
 
@@ -253,8 +253,8 @@ const styles = StyleSheet.create({
   },
 });
 ```
-Within this second page the user can choose to identify themselves as a person that experiences ADHD/ADD/anxiety, for data collection purposes. This identification is done by clicking a button which then changes the initial prompt and button text to indicate to the user that their action was recorded.
 
+The third page of the app was designed to help better understand the intentions and goals of the user through app usage by taking information via buttons and text inputs. The buttons used on this page demonstrates that the users response was recorded via flashing of the button that was pressed and a confirmation alert of  the response taken.
 
 ``` javascript
 
@@ -302,12 +302,7 @@ const styles = StyleSheet.create({
 });
 export default App;
 ```
-This third page helps to understand the intentions ang goals of the user better by taking information via buttons and text inputs. The buttons used on this page are show that the users response was recorded via a flashing of the button pressed and a confirmation alert of  the response taken.
 
+The fourth page collects data via text inputs to determine which features of the Fidgie Qlicker the user believes they will use most frequently. This will help to analyze the Fidgie Qlickr usage as well as serve as documentation for the users fidgeting behaviours.
 
-The fourth page takes the data from the user via text inputs to determine which feature of the Fidgie Qlicker the user believes they will use most frequently. 
-
-The last page is to wrap up the user experience and help the user see the possible change in data of before and after usage of Fidgie Qlickr. All of the data taken from this page is via Text Input.
-
-
-
+The last page was used to wrap up the user experience through letting the user reflect on their Fidgie Qlickr usage, which will be used to compare the before and after data. All of the data taken from this page was via Text Input.
