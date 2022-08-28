@@ -49,7 +49,7 @@ void setup() {
 }
 ```
 
-The second part of the code involved sending usuable data to a web server that would be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not (1 is for not pressed, and 0 and is for pressed). The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
+The second part of the code involved sending usuable data to a web server that would be analyzed to create useful data insights for the user. The push button will always return either 1 or 0, depending on whether the button is pressed or not (0 is for pressed, and 1 and is for not pressed). The potentiometer will return a value between 0-1023 which will be mapped down to a scale of 0-10. In this context, the potentiometer value refers to how much the slider has been moved. The desired data output is as follows:
 ```txt
 1 2425  1
 2 2426  5
